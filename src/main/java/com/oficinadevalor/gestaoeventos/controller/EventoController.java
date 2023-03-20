@@ -32,7 +32,7 @@ public class EventoController {
     @Autowired
     private EventoService service;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<Evento>> findAll(@RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "15") int size,
                                                 @RequestParam(defaultValue = "DESC") Sort.Direction direction,

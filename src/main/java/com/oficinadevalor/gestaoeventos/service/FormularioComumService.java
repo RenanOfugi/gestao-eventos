@@ -10,6 +10,7 @@ import com.oficinadevalor.gestaoeventos.model.TipoCampo;
 import com.oficinadevalor.gestaoeventos.model.dtos.FormularioComumCreateRequestDto;
 import com.oficinadevalor.gestaoeventos.model.dtos.FormularioComumUpdateRequestDto;
 import com.oficinadevalor.gestaoeventos.repository.FormularioComumRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @Service
 public class FormularioComumService {
 
+    private static final FormularioComumMapper MAPPER = FormularioComumMapper.INSTANCE;
     private final FormularioComumRepository repository;
     private final EventoService eventoService;
     private final List<TipoCampo> tipoCampos;
@@ -33,8 +35,6 @@ public class FormularioComumService {
         this.tipoCampos = tipoCampoService.findAll();
     }
 
-    private static final FormularioComumMapper MAPPER = FormularioComumMapper.INSTANCE;
-
     @Transactional
     public FormularioComum create(FormularioComumCreateRequestDto requestDto) {
         FormularioComum formulario = MAPPER.dtoCreateToEntity(requestDto);
@@ -45,7 +45,7 @@ public class FormularioComumService {
 
     @Transactional
     public FormularioComum update(FormularioComumUpdateRequestDto requestDto, Long id) {
-        FormularioComum formulario = findByPk(id);
+        FormularioComum formulario = findById(id);
         FormularioComum formularioUpdate = MAPPER.dtoCreateToEntity(requestDto);
         setTipoCamposUpdate(formularioUpdate, formulario);
         updateData(formularioUpdate, formulario);
@@ -53,21 +53,21 @@ public class FormularioComumService {
         return repository.save(formulario);
     }
 
-    private void setTipoCamposCreate(FormularioComum formulario){
+    private void setTipoCamposCreate(FormularioComum formulario) {
         formulario.getCampoEspecificos().forEach(formularioEspecifico -> {
             formularioEspecifico.setTipoCampo(findTipoCampoInList(formularioEspecifico.getTipoCampo().getTipo()));
             formularioEspecifico.setFormularioComum(formulario);
         });
     }
 
-    private void setTipoCamposUpdate(FormularioComum formularioUpdate, FormularioComum formulario){
+    private void setTipoCamposUpdate(FormularioComum formularioUpdate, FormularioComum formulario) {
         formularioUpdate.getCampoEspecificos().forEach(formularioEspecifico -> {
             formularioEspecifico.setTipoCampo(findTipoCampoInList(formularioEspecifico.getTipoCampo().getTipo()));
             formularioEspecifico.setFormularioComum(formulario);
         });
     }
 
-    private void updateData(FormularioComum formularioUpdate, FormularioComum formulario){
+    private void updateData(FormularioComum formularioUpdate, FormularioComum formulario) {
 
         formulario.setNome(formularioUpdate.getNome());
         formulario.setEmail(formularioUpdate.getEmail());
@@ -77,14 +77,18 @@ public class FormularioComumService {
     }
 
     @Transactional
-    public FormularioComum findByPk(String cpfCnpj){
-         return repository.findByPk(cpfCnpj) .orElseThrow(() -> {
-            throw new EntityNotFoundException("Formulário não encontrado");
-         });
+    public FormularioComum findByPk(String cpfCnpj) {
+        return repository.findByPk(cpfCnpj)
+                .map(formularioComum -> {
+                    Hibernate.initialize(formularioComum.getCampoEspecificos());
+                    return formularioComum;
+                })
+                .orElseThrow(() -> {
+                    throw new EntityNotFoundException("Formulário não encontrado");
+                });
     }
 
-    @Transactional
-    public FormularioComum findByPk(Long id){
+    public FormularioComum findById(Long id) {
         return repository.findById(id).orElseThrow(() -> {
             throw new EntityNotFoundException("Formulário não encontrado");
         });
@@ -92,12 +96,12 @@ public class FormularioComumService {
 
     @Transactional
     private Evento getEvent(Long idEvento) {
-        return Optional.of(eventoService.findById(idEvento)).orElseThrow(() ->{
+        return Optional.of(eventoService.findById(idEvento)).orElseThrow(() -> {
             throw new EntityNotAllowedException("Evento não encontrado");
         });
     }
 
-    private TipoCampo findTipoCampoInList(TipoCampoEnum tipoCampoEnum){
+    private TipoCampo findTipoCampoInList(TipoCampoEnum tipoCampoEnum) {
         return tipoCampos.stream()
                 .filter(tipoCampo -> tipoCampo.getTipo().equals(tipoCampoEnum))
                 .findFirst()
@@ -108,6 +112,8 @@ public class FormularioComumService {
 
     @Transactional
     public Page<FormularioComum> findAll(PageRequest pageable) {
-        return repository.findAll(pageable);
+        Page<FormularioComum> formularioComumPage = repository.findAll(pageable);
+        formularioComumPage.forEach(formularioComum -> Hibernate.initialize(formularioComum.getCampoEspecificos()));
+        return formularioComumPage;
     }
 }

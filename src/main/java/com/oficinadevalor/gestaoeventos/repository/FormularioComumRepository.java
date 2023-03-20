@@ -3,11 +3,9 @@ package com.oficinadevalor.gestaoeventos.repository;
 import com.oficinadevalor.gestaoeventos.model.FormularioComum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
 public interface FormularioComumRepository extends JpaRepository<FormularioComum, Long> {
 
     @Query("""
