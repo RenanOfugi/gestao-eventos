@@ -1,4 +1,4 @@
-# Projeto Gestão de Eventos
+#Projeto Gestão de Eventos
 
 ## Tecnologias Utilizadas
 
@@ -8,6 +8,7 @@
   4. JPA - Biblioteca ORM para abstrair o mapeamento entre objeto e banco de dados
   5. Java 17
   6. PostgreSQL
+  7. Swagger 3 (Open API) - Documentação dos endpoints
 
 ## Como executar este projeto
 
@@ -22,3 +23,4 @@
 
 ```
 
+  6. Na porta configurada no .properties (porta 1111) terá a documentação do swagger dos endpoints de eventos e formulários (**localhost:1111/swagger-ui/index.html**)
