@@ -9,6 +9,7 @@
   5. Java 17
   6. PostgreSQL
   7. Swagger 3 (Open API) - Documentação dos endpoints
+  8. Mapstruct - Biblioteca para conversão automática de DTOs para entidades e vice versa
 
 ## Como executar este projeto
 
