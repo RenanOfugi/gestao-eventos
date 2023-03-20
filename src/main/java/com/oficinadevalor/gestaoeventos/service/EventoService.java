@@ -11,9 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
-import java.util.List;
-
 @Service
 public class EventoService {
 
@@ -33,5 +30,27 @@ public class EventoService {
     @Transactional
     public Evento create(EventoRequestDto requestDto) {
         return repository.save(MAPPER.requestDtoToEntity(requestDto));
+    }
+
+    @Transactional
+    public Evento update(EventoRequestDto requestDto, Long id) {
+        return repository.findById(id).map(evento -> {
+          Evento eventoUpdate = MAPPER.requestDtoToEntity(requestDto);
+          updateEvento(eventoUpdate, evento);
+          return evento;
+        }).orElseThrow(() -> {
+            throw new EntityNotFoundException("Não há evento para este id");
+        });
+    }
+
+    private void updateEvento(Evento eventoUpdate, Evento evento){
+        evento.setNome(eventoUpdate.getNome());
+        evento.setDescricao(eventoUpdate.getDescricao());
+        evento.setEmpresa(eventoUpdate.getEmpresa());
+        evento.setDataCriacao(eventoUpdate.getDataCriacao());
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }
