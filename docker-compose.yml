@@ -1,0 +1,29 @@
+version: '2'
+services:
+  api:
+    image: 'renanofugi/gestao-eventos:latest'
+    build:
+      context: .
+    restart: always
+    ports:
+      - "1111:1111"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/gestao-eventos
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=ep8Vqhwvmi9Bpa
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    links:
+      - db:db
+  
+  db:
+    image: 'postgres:13.1-alpine'
+    restart: always
+    container_name: db
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=ep8Vqhwvmi9Bpa
+      - POSTGRES_DB=gestao-eventos  
