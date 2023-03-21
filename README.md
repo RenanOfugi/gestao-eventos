@@ -1,4 +1,4 @@
-#Projeto Gestão de Eventos
+# Projeto Gestão de Eventos
 
 ## Tecnologias Utilizadas
 
@@ -8,6 +8,8 @@
   4. JPA - Biblioteca ORM para abstrair o mapeamento entre objeto e banco de dados
   5. Java 17
   6. PostgreSQL
+  7. Swagger 3 (Open API) - Documentação dos endpoints
+  8. Mapstruct - Biblioteca para conversão automática de DTOs para entidades e vice versa
 
 ## Como executar este projeto - Localmente via Maven
 
