@@ -9,16 +9,25 @@
   5. Java 17
   6. PostgreSQL
 
-## Como executar este projeto
+## Como executar este projeto - Localmente via Maven
 
   1. Tenha o java 17 instalado - jdk17
   2. Tenha o PostgreSQL instalado - qualquer versão mais recente
   3. No terminal, navegue até a pasta do projeto
-  4. Modifique o arquivo .properties (**src/main/resources/application.properties**) com o username e password do postgresql usado na máquina.
+  4. Modifique o arquivo application-dev.properties (**src/main/resources/application-dev.properties**) com o username e password do postgresql usado na máquina.
   5. Execute o maven wrapper com o comando abaixo
 
 ```maven
-./mvnw spring-boot:run
+./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 
 ```
 
+## Como executar este projeto - Docker
+
+  Com o docker devidamente configurado, execute:
+
+  ```
+  sudo docker compose up
+  ```
+
+O serviço estará disponível em **localhost:1111** podendo ver seus endpoints e testa-los em *localhost:1111/swagger-ui/index.html*
